@@ -1,0 +1,46 @@
+/* * {
+    outline: 1px solid black;
+} */
+
+* {
+    font-family: "Poppins", system-ui;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.custom-shadow {
+    -webkit-box-shadow: 0px 0px 16px 2px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: 0px 0px 16px 2px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 0px 16px 2px rgba(0, 0, 0, 0.1);
+}
+
+.custom-py-1p {
+    padding-top: 1%;
+    padding-bottom: 1%;
+}
+:root {
+    --bg-color: #F3F8FF;
+    --text-color: #004369;
+    --card-bg-color: white;
+    --border-color: gray;
+}
+
+[data-theme="dark"] {
+    --bg-color: #121212;
+    --text-color: #FFFFFF;
+    --card-bg-color: #1F1F1F;
+    --border-color: #333333;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.bg-white {
+    background-color: var(--card-bg-color);
+}
+
+.border-gray-300 {
+    border-color: var(--border-color);
+}
