@@ -3,7 +3,7 @@ session_start();
 
 
 $servername = "localhost";
-$dbusername = "adminnex@localhost";  
+$dbusername = "admin_macmac";  
 $dbpassword = "macmac2323";  
 $dbname = "admin_admin";  
 
