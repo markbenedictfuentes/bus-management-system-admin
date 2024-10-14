@@ -22,7 +22,7 @@ $name = $_SESSION['name'];
 
     <link rel="stylesheet" href="styles/global.css">
     <link rel="stylesheet" href="styles/login.css">
-    <title>Legal Management</title>
+    <title>Rent Management</title>
 </head>
 
 <body>
