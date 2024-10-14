@@ -3,9 +3,9 @@ session_start();
 
 
 $servername = "localhost";
-$dbusername = "root";  
-$dbpassword = "";  
-$dbname = "admin";  
+$dbusername = "adminnex@localhost";  
+$dbpassword = "macmac2323";  
+$dbname = "admin_admin";  
 
 
 $conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
