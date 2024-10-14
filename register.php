@@ -10,9 +10,9 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$email = "pagadora@jabol.com";  
-$name = "jabol pagadora";
-$password = "pagadora";  
+$email = "admin@admin.com";  
+$name = "admin";
+$password = "admin";  
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
 
