@@ -10,7 +10,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$email = "admin@admin.com";  
+$email = "shincipherishere1@gmail.com";  
 $name = "admin";
 $password = "admin";  
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
