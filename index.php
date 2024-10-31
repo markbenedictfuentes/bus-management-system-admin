@@ -57,7 +57,7 @@ session_start();
                         />
                         <span class="text-sm hover:text-gray-300/50 rounded-md text-[#00446b]">Remember me</span>
                     </label>
-                    <a class="text-sm hover:text-gray-300/50 rounded-md text-[#00446b]" href="forgotpassword.html">Forgot password?</a>
+                    <a class="text-sm hover:text-gray-300/50 rounded-md text-[#00446b]" href="forgotpassword.php">Forgot password?</a>
                 
                 </div>
             
