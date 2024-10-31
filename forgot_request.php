@@ -11,7 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     
     // Check if email exists in the database
-    $conn = new mysqli("localhost", "root", "", "admin");
+    $conn = new mysqli("localhost", "admin_macmac", "macmac2323", "admi_admin");
 
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
