@@ -39,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         try {
             // Server settings
             $mail->isSMTP();
-            $mail->Host = 'mail.admin.nexfleetdynamics.com'; // Set the SMTP server to send through
+            $mail->Host = 'admin.nexfleetdynamics.com'; // Set the SMTP server to send through
             $mail->SMTPAuth = true;
             $mail->Username = 'macmac'; // SMTP username
             $mail->Password = 'macmac'; // SMTP password
