@@ -41,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mail->isSMTP();
             $mail->Host = 'mail.admin.nexfleetdynamics.com'; // Set the SMTP server to send through
             $mail->SMTPAuth = true;
-            $mail->Username = 'macmac@mail.admin.nexfleetdynamics.com	'; // SMTP username
+            $mail->Username = 'macmac@mail.admin.nexfleetdynamics.com'; // SMTP username
             $mail->Password = 'macmac'; // SMTP password
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = 587;
