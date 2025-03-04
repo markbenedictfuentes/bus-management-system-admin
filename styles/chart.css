@@ -1,0 +1,163 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf5 100%);
+    color: #333;
+  }
+  
+  .dashboard {
+    max-width: 1250px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .dashboard-header {
+    padding-bottom: 15px;
+    border-bottom: 2px solid #d0e1ff;
+    margin-bottom: 20px;
+  }
+  
+  .dashboard-title {
+    font-size: 24px;
+    font-weight: 700;
+    background: linear-gradient(90deg, #3a7bd5, #6a11cb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 0;
+  }
+  
+  .stats-container {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(31, 82, 160, 0.1);
+    padding: 20px;
+    margin-bottom: 25px;
+  }
+  
+  .summary-box {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+  
+  .summary-card {
+    border-radius: 12px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Vibrant gradient summary cards */
+  .summary-card:nth-child(1) {
+    background: linear-gradient(135deg, #ff416c, #ff4b2b);
+    color: white;
+  }
+  
+  .summary-card:nth-child(2) {
+    background: linear-gradient(135deg, #11998e, #38ef7d);
+    color: white;
+  }
+  
+  .summary-card:nth-child(3) {
+    background: linear-gradient(135deg, #8e2de2, #4a00e0);
+    color: white;
+  }
+  
+  .summary-number {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 5px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  .summary-label {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0;
+    opacity: 0.9;
+  }
+  
+  .chart-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 20px;
+    overflow-x: auto;
+  }
+  
+  .chart-box {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border: none;
+    overflow: hidden;
+    height: 300px;
+    flex: 0 0 32%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  
+  /* Gradient borders for chart boxes */
+  .chart-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #6a11cb, #2575fc);
+  }
+  
+  .chart-box:nth-child(2)::before {
+    background: linear-gradient(90deg, #fc4a1a, #f7b733);
+  }
+  
+  .chart-box:nth-child(3)::before {
+    background: linear-gradient(90deg, #00b09b, #96c93d);
+  }
+  
+  .chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  
+  .chart-title {
+    font-size: 18px;
+    font-weight: 700;
+    background: linear-gradient(90deg, #3a7bd5, #3a6073);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 0;
+  }
+  
+  .chart-canvas {
+    width: 100%;
+    flex-grow: 1;
+    max-height: 220px;
+  }
+  
+  canvas {
+    max-width: 100%;
+    max-height: 100%;
+  }
+  
+  @media (max-width: 900px) {
+    .chart-container {
+      flex-direction: column;
+    }
+  
+    .chart-box {
+      flex: 1;
+      width: 100%;
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .summary-box {
+      grid-template-columns: 1fr;
+    }
+  }

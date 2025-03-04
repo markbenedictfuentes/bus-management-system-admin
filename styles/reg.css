@@ -1,0 +1,102 @@
+/* Registration Form Container */
+.form-container {
+  max-width: 800px; /* Pinalawak na width */
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Base Font */
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Input Container */
+.input-container {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+/* Input with Icon */
+.input-with-icon {
+  position: relative;
+}
+
+.input-with-icon i {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+  z-index: 10;
+}
+
+/* Input and Select Styling */
+.input-with-icon input,
+.input-with-icon select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  padding-left: 3rem !important; /* para may space sa icon */
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-with-icon input:focus,
+.input-with-icon select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+  outline: none;
+}
+
+/* Submit Button */
+button[type="submit"] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.125rem;
+  background-color: #3b82f6;
+  color: #ffffff;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button[type="submit"]:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #2563eb;
+}
+
+/* Icon Circle */
+.icon-circle {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 70px;
+  height: 70px;
+  background-color: #e0e7ff;
+  border-radius: 50%;
+  margin-bottom: 1.25rem;
+}
+
+.icon-circle i {
+  font-size: 28px;
+  color: #4f46e5;
+}
+
+/* Anchor Links */
+a {
+  color: #3b82f6;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: #2563eb;
+}

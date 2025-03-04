@@ -1,24 +1,19 @@
 <?php
-session_start();  
+session_start();
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="styles/global.css">
     <link rel="stylesheet" href="styles/login.css">
     <title>Login</title>
 </head>
-
 <body>
     <div class="h-screen flex md:flex-row flex-col">
         <div class="lg:w-3/5 h-screen custom-py-1p lg:block hidden">
@@ -40,7 +35,7 @@ session_start();
                     unset($_SESSION['error']); 
                     ?>
                 </div>
-            <?php endif; ?>
+                <?php endif; ?>
                 
                 <div class="mt-8 w-4/5">
                     <input class="mt-1 block w-full bg-transparent rounded-md border p-2" type="email" name="email" placeholder="Email" required>
@@ -51,14 +46,10 @@ session_start();
             
                 <div class="w-4/5 flex justify-between mt-4 lg:mb-12 mb-12">
                     <label class="flex items-center">
-                        <input 
-                        type="checkbox"
-                        name="remember"
-                        />
+                        <input type="checkbox" name="remember" />
                         <span class="text-sm hover:text-gray-300/50 rounded-md text-[#00446b]">Remember me</span>
                     </label>
                     <a class="text-sm hover:text-gray-300/50 rounded-md text-[#00446b]" href="forgot.php">Forgot password?</a>
-                
                 </div>
             
                 <div class="flex items-center mt-4 mb-8 w-4/5">
@@ -66,10 +57,9 @@ session_start();
                         <p class="text-center text-white">Log In</p>
                     </button>   
                 </div>
-                <a class="text-sm hover:text-gray-300/50 rounded-md text-[#00446b]" href="register.html">Register</a>
-          </form>
+                <a class="text-sm hover:text-gray-300/50 rounded-md text-[#00446b]" href="registration.php">Register</a>
+            </form>
         </div>
     </div>
 </body>
-
 </html>

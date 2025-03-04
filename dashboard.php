@@ -1,6 +1,7 @@
-<?php
-session_start();
+<?php 
+// header.php
 
+session_start();
 if (!isset($_SESSION['user_id'])) {
     header("Location: index.php");
     exit();
@@ -8,156 +9,189 @@ if (!isset($_SESSION['user_id'])) {
 $name = $_SESSION['name'];
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<?php include 'include/header.php'; ?>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-        rel="stylesheet">
+<div class="dashboard">
 
-    <link rel="stylesheet" href="styles/global.css">
-    <link rel="stylesheet" href="styles/login.css">
-    <title>Dashboard</title>
-</head>
-
-<body>
-    <div class="flex h-screen">
-        <aside class="bg-[#F3F8FF] w-80 hidden md:block border border-gray-300 m-4 mr-0 rounded-lg overflow-hidden">
-            <p class='m-4 mb-12 font-bold text-2xl text-center text-[#00446b]'>NextFleet Dynamics</p>
-
-            <div class="flex flex-col mr-4">
-                <a href="dashboard.php" class='flex relative my-1 w-full'>
-                    <span class='w-4 rounded-xl absolute -left-2 h-full bg-[#004369]'>
-                    </span>
-                    <p class='ml-8 flex w-full p-1 rounded-xl font-semibold text-white bg-[#004369]'>
-                        <span class="flex items-center gap-1 text-lg px-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round"
-                                class="icon icon-tabler icons-tabler-outline icon-tabler-chart-bar">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                <path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
-                                <path d="M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
-                                <path d="M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
-                                <path d="M4 20h14" />
-                            </svg>
-                        Dashboard
-                        </span>
-                    </p>
-                </a>
-            </div>
-            <div class='flex relative'>
-                <a href="visitor.php" class='ml-8 flex p-1 w-full rounded-xl text-[#004369] mr-4'>
-                    <span class='flex items-center gap-1 px-1'>
-                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-user-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M16 19h6" /><path d="M19 16v6" /><path d="M6 21v-2a4 4 0 0 1 4 -4h4" /></svg>
-                        <p>Visitor Management</p>
-                    </span>
-                </a>
-            </div>
-
-            <div class='flex relative'>
-                <a href="legal.php" class='ml-8 flex p-1 w-full rounded-xl text-[#004369] mr-4'>
-                    <span class='flex items-center gap-1 px-1'>
-                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-gavel"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M13 10l7.383 7.418c.823 .82 .823 2.148 0 2.967a2.11 2.11 0 0 1 -2.976 0l-7.407 -7.385" /><path d="M6 9l4 4" /><path d="M13 10l-4 -4" /><path d="M3 21h7" /><path d="M6.793 15.793l-3.586 -3.586a1 1 0 0 1 0 -1.414l2.293 -2.293l.5 .5l3 -3l-.5 -.5l2.293 -2.293a1 1 0 0 1 1.414 0l3.586 3.586a1 1 0 0 1 0 1.414l-2.293 2.293l-.5 -.5l-3 3l.5 .5l-2.293 2.293a1 1 0 0 1 -1.414 0z" /></svg>
-                        <p>Legal Management</p>
-                    </span>
-                </a>
-            </div>
-
-            <div class='flex relative'>
-                <a href="docu.php" class='ml-8 flex p-1 w-full rounded-xl text-[#004369] mr-4'>
-                    <span class='flex items-center gap-1 px-1'>
-                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-briefcase"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" /><path d="M8 7v-2a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v2" /><path d="M12 12l0 .01" /><path d="M3 13a20 20 0 0 0 18 0" /></svg>
-                            <p>Document Management</p>
-                        </span>
-
-                </a>
-            </div>
-
-            <div class='flex relative'>
-                <a href="rent.php" class='ml-8 flex p-1 w-full rounded-xl text-[#004369] mr-4'>
-                    <span class='flex items-center gap-1 px-1'>
-                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-bus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M18 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M4 17h-2v-11a1 1 0 0 1 1 -1h14a5 7 0 0 1 5 7v5h-2m-4 0h-8" /><path d="M16 5l1.5 7l4.5 0" /><path d="M2 10l15 0" /><path d="M7 5l0 5" /><path d="M12 5l0 5" /></svg>                     
-                           <p>Rent Reservation</p>
-                    </span>
-                </a>
-            </div>
-        </aside>
-        <div class='flex flex-col w-full h-screen overflow-y-scroll'>
-            <nav
-                class='md:sticky block md:w-auto top-4 z-10 bg-white-10/50 backdrop-blur-sm border border-gray-300 rounded-md m-4'>
-                <div class="flex w-full">
-                    <div class="-me-2 flex items-center sm:hidden">
-                        <button
-                            class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
-                        </button>
-                    </div>
-                    <div class="relative flex justify-between w-full">
-                        <div class="mx-4 my-4 font-medium text-3xl text-[#004369]">Dashboard</div>
-                  <button id="dropdownButton" type="button"
-                        class="inline-flex items-center px-3 py-2 font-medium transition ease-in-out duration-150">
-                        <?php echo ($name); ?>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                            fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-caret-down">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                            <path
-                                d="M18 9c.852 0 1.297 .986 .783 1.623l-.076 .084l-6 6a1 1 0 0 1 -1.32 .083l-.094 -.083l-6 -6l-.083 -.094l-.054 -.077l-.054 -.096l-.017 -.036l-.027 -.067l-.032 -.108l-.01 -.053l-.01 -.06l-.004 -.057v-.118l.005 -.058l.009 -.06l.01 -.052l.032 -.108l.027 -.067l.07 -.132l.065 -.09l.073 -.081l.094 -.083l.077 -.054l.096 -.054l.036 -.017l.067 -.027l.108 -.032l.053 -.01l.06 -.01l.057 -.004l12.059 -.002z" />
-                        </svg>
-                    </button>
-                    <div id="dropdownMenu" class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                        <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="dropdownButton">
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Profile</a>
-                            <a href="logout.php" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Logout</a>
-                            <script src="js/dropdown.js"></script>
-                        </div>
-                    </div>
-                    </div>
-                </div>
-            </nav>
-            
-                     <div class="max-w-4xl mx-auto py-10">
- 
-                        <div class="bg-white shadow-md rounded-lg p-6">
-                            <h2 class="text-xl font-semibold mb-4">Visitor Statistics</h2>
-                
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-                                <div class="bg-blue-500 text-white rounded-lg p-6 text-center">
-                                    <h3 class="text-2xl font-semibold">Total Visitors</h3>
-                                    <p id="totalVisitors" class="text-4xl mt-3">0</p>
-                                </div>
-                
-
-                                <div class="bg-green-500 text-white rounded-lg p-6 text-center">
-                                    <h3 class="text-2xl font-semibold">Repeat Visitors</h3>
-                                    <p id="repeatVisitors" class="text-4xl mt-3">0</p>
-                                </div>
-                
-
-                                <div class="bg-yellow-500 text-white rounded-lg p-6 text-center">
-                                    <h3 class="text-2xl font-semibold">Common Purpose</h3>
-                                    <p id="commonPurpose" class="text-4xl mt-3">---</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                
-                    <script src="js/fakestat.js">
-                    </script>
-        </div>
-
+  <div class="summary-box">
+    <div class="summary-card">
+      <div class="summary-number">150</div>
+      <p class="summary-label">Total Visitors</p>
     </div>
+    <div class="summary-card">
+      <div class="summary-number">75</div>
+      <p class="summary-label">Repeat Visitors</p>
+    </div>
+    <div class="summary-card">
+      <div class="summary-number">50%</div>
+      <p class="summary-label">Return Rate</p>
+    </div>
+  </div>
 
-</body>
+  <div class="stats-container">
+    <div class="chart-container">
+      <!-- Bar Chart -->
+      <div class="chart-box">
+        <h3 class="chart-title">Visitor Categories</h3>
+        <canvas id="barChart"></canvas>
+      </div>
 
-</html>
+      <!-- Line Chart -->
+      <div class="chart-box">
+        <h3 class="chart-title">Monthly Visitor Trends</h3>
+        <canvas id="lineChart"></canvas>
+      </div>
 
+      <!-- Pie Chart -->
+      <div class="chart-box">
+        <h3 class="chart-title">Visitor Distribution</h3>
+        <canvas id="pieChart"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
 
-</body>
-</html>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+ // Replace monotonous blue theme with vibrant diverse colors
+const colorPalette = {
+  backgroundColor: [
+    'rgba(255, 99, 132, 0.8)',    // Vibrant red
+    'rgba(54, 162, 235, 0.8)',    // Blue
+    'rgba(255, 206, 86, 0.8)',    // Yellow
+    'rgba(75, 192, 192, 0.8)',    // Teal
+    'rgba(153, 102, 255, 0.8)',   // Purple
+    'rgba(255, 159, 64, 0.8)'     // Orange
+  ],
+  borderColor: [
+    'rgba(255, 99, 132, 1)',
+    'rgba(54, 162, 235, 1)',
+    'rgba(255, 206, 86, 1)',
+    'rgba(75, 192, 192, 1)',
+    'rgba(153, 102, 255, 1)',
+    'rgba(255, 159, 64, 1)'
+  ]
+};
+
+Chart.defaults.font.size = 12; // Increased font size
+Chart.defaults.plugins.legend.display = true;
+
+// Bar Chart with new colors
+const barCtx = document.getElementById('barChart').getContext('2d');
+new Chart(barCtx, {
+  type: 'bar',
+  data: {
+    labels: ['Total', 'Repeat', 'New'],
+    datasets: [{
+      label: 'Visitors',
+      data: [150, 75, 75],
+      backgroundColor: [colorPalette.backgroundColor[0], colorPalette.backgroundColor[1], colorPalette.backgroundColor[2]],
+      borderColor: [colorPalette.borderColor[0], colorPalette.borderColor[1], colorPalette.borderColor[2]],
+      borderWidth: 1
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: {
+        beginAtZero: true,
+        grid: {
+          color: 'rgba(200, 200, 200, 0.2)' // Lighter grid lines
+        }
+      },
+      x: {
+        grid: {
+          display: false // Remove x-axis grid lines
+        }
+      }
+    },
+    plugins: {
+      legend: {
+        display: true,
+        position: 'top'
+      }
+    }
+  }
+});
+
+// Line Chart with gradient fill
+const lineCtx = document.getElementById('lineChart').getContext('2d');
+const lineGradient = lineCtx.createLinearGradient(0, 0, 0, 400);
+lineGradient.addColorStop(0, 'rgba(153, 102, 255, 0.8)');
+lineGradient.addColorStop(1, 'rgba(153, 102, 255, 0.1)');
+
+new Chart(lineCtx, {
+  type: 'line',
+  data: {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    datasets: [{
+      label: 'Visitors',
+      data: [65, 59, 80, 81, 56, 55],
+      backgroundColor: lineGradient,
+      borderColor: colorPalette.borderColor[4], // Purple
+      borderWidth: 3,
+      fill: true,
+      tension: 0.4 // Add curve to line
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: {
+        grid: {
+          color: 'rgba(200, 200, 200, 0.2)'
+        }
+      },
+      x: {
+        grid: {
+          display: false
+        }
+      }
+    }
+  }
+});
+
+// Pie Chart with vibrant colors
+const pieCtx = document.getElementById('pieChart').getContext('2d');
+new Chart(pieCtx, {
+  type: 'doughnut',
+  data: {
+    labels: ['First-time', 'Repeat', 'Frequent'],
+    datasets: [{
+      data: [75, 50, 25],
+      backgroundColor: [
+        colorPalette.backgroundColor[5], // Orange
+        colorPalette.backgroundColor[3], // Teal
+        colorPalette.backgroundColor[2]  // Yellow
+      ],
+      borderColor: [
+        colorPalette.borderColor[5],
+        colorPalette.borderColor[3],
+        colorPalette.borderColor[2]
+      ],
+      borderWidth: 1
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: {
+          boxWidth: 15,
+          padding: 15,
+          font: {
+            size: 12
+          }
+        }
+      }
+    },
+    cutout: '65%'
+  }
+});
+</script>
+
+<?php include 'include/footer.php'; ?>
