@@ -8,7 +8,7 @@
         </button>
       </div>
       <div class="relative flex justify-between w-full">
-        <div class="mx-4 my-4 font-medium text-3xl text-[#004369]">Dashboard</div>
+        <div class="mx-4 my-4 font-medium text-3xl text-[#004369]"></div>
         <button id="dropdownButton" type="button" class="inline-flex items-center px-3 py-2 font-medium transition ease-in-out duration-150">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                viewBox="0 0 24 24" fill="currentColor"
@@ -20,7 +20,7 @@
         <div id="dropdownMenu" class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
           <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="dropdownButton">
             <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Profile</a>
-            <a href="logout.php" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Logout</a>
+            <a href="/logout.php" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Logout</a>
             <script src="/js/dropdown.js"></script>
           </div>
         </div>

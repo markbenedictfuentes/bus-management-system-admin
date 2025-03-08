@@ -24,11 +24,11 @@ if ($result->num_rows > 0) {
         if ($user['role'] === 'admin') {
             header("Location: dashboard.php"); // Admin dashboard (root folder)
         } elseif ($user['role'] === 'staff') {
-            header("Location: private/staff/dashboard/dashboard.php");
+            header("Location: private/employee/dashboard.php");
         } elseif ($user['role'] === 'visitor') {
-            header("Location: private/visitor/dashboard/dashboard.php");
+            header("Location: private/visitors/dashboard.php");
         } elseif ($user['role'] === 'employee') {
-            header("Location: private/employee/dashboard/dashboard.php");
+            header("Location: private/employee/dashboard.php");
         } else {
             header("Location: index.php");
         }

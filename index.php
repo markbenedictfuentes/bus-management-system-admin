@@ -57,7 +57,7 @@ session_start();
                         <p class="text-center text-white">Log In</p>
                     </button>   
                 </div>
-                <a class="text-sm hover:text-gray-300/50 rounded-md text-[#00446b]" href="registration.php">Register</a>
+                <a class="text-sm hover:text-gray-300/50 rounded-md text-[#00446b]" href="visitors.php">Register</a>
             </form>
         </div>
     </div>

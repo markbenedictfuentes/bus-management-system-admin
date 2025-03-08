@@ -1,0 +1,191 @@
+/* Main Layout and Colors */
+:root {
+    --primary: #3b82f6;
+    --primary-dark: #2563eb;
+    --secondary: #64748b;
+    --light: #f8fafc;
+    --dark: #1e293b;
+    --success: #10b981;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-300: #cbd5e1;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+  
+  body {
+    font-family: 'poppins', 'Segoe UI', system-ui, sans-serif;
+    background-color: #f1f5f9;
+    color: var(--dark);
+  }
+  
+  /* Card Styling */
+  .card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    margin-bottom: 2rem;
+    background-color: white;
+  }
+  
+  .card-header {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    padding: 1.25rem;
+    border-bottom: none;
+  }
+  
+  .card-header h2 {
+    font-weight: 600;
+    margin: 0;
+    font-size: 1.5rem;
+  }
+  
+  .card-body {
+    padding: 2rem;
+    font-size: 13px;
+    color: rgb(43, 43, 43);
+  }
+  
+  /* Form Elements */
+  .form-label {
+    font-weight: 500;
+    color: var(--secondary);
+    margin-bottom: 0.5rem;
+    font-size: 14px;
+    color: rgb(37, 37, 37);
+  }
+  
+  .form-control, .form-select {
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--gray-300);
+    box-shadow: none;
+    transition: all 0.3s ease;
+    font-size: 12px;
+    color: black;
+  }
+  
+  .form-control:focus, .form-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+  }
+  
+  textarea.form-control {
+    min-height: 100px;
+  }
+  
+  /* Button Styling */
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.25);
+  }
+  
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 10px rgba(59, 130, 246, 0.3);
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+  }
+  
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+  
+  /* Alert Styling */
+  .alert {
+    border-radius: 8px;
+    border: none;
+    font-weight: 500;
+  }
+  
+  .alert-success {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: var(--success);
+    border-left: 4px solid var(--success);
+  }
+  
+  .alert-danger {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+    border-left: 4px solid var(--danger);
+  }
+  
+  .btn-close {
+    background: transparent;
+    opacity: 0.7;
+  }
+  
+  /* File Input Styling */
+  input[type="file"] {
+    padding: 0.5rem;
+    background-color: var(--gray-100);
+  }
+  
+  input[type="file"]::-webkit-file-upload-button {
+    background-color: var(--secondary);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    margin-right: 1rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  
+  input[type="file"]::-webkit-file-upload-button:hover {
+    background-color: var(--dark);
+  }
+  
+  /* Additional Layout Improvements */
+  .row {
+    margin-left: -0.75rem;
+    margin-right: -0.75rem;
+  }
+  
+  .col-md-6 {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  /* Page Header */
+  h1.text-3xl {
+    padding: 1.5rem 2rem;
+    margin-bottom: 0;
+    color: var(--primary-dark);
+    font-weight: 700;
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .card-body {
+      padding: 1.5rem;
+    }
+    
+    h1.text-3xl {
+      padding: 1rem 1.5rem;
+      font-size: 1.75rem;
+    }
+  }
+  
+  /* Custom Datetime Input */
+  input[type="datetime-local"] {
+    min-height: 42px;
+  }
+  
+  /* Container Padding */
+  .container-fluid {
+    padding: 0 2rem 2rem;
+  }
+  
+  /* Optional: Animate Fields on Focus */
+  .form-control:focus, .form-select:focus {
+    transform: translateY(-2px);
+    transition: transform 0.3s ease;
+  }

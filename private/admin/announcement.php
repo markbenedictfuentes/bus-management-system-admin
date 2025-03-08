@@ -10,7 +10,7 @@ $result = mysqli_query($conn, $query);
 <body class="h-screen flex bg-gray-100">
   <?php include '../../include/sidebar2.php'; ?>
   <div class="flex-1 flex flex-col">
-    <?php include '../../include/topbar.php'; ?>
+    <?php include '../../include/topbar2.php'; ?>
     <div class="flex-1 overflow-y-auto p-4">
       <header class="header">
         <div class="container">

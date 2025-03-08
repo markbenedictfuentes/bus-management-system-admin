@@ -22,7 +22,7 @@
 </head>
 
 <body>
-<div class="flex h-screen">
-
+<body class="h-screen flex bg-gray-100">
+  
 <?php include 'include/sidebar.php'; ?>
 <?php include 'include/topbar.php'; ?>

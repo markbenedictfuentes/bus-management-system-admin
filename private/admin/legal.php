@@ -2,362 +2,451 @@
 session_start();
 include 'db_connect.php';
 
-// Process New Case Entry Form Submission
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['case_title'])) {
-    $title       = mysqli_real_escape_string($conn, $_POST['case_title']);
-    $description = mysqli_real_escape_string($conn, $_POST['case_description']);
-    $status      = mysqli_real_escape_string($conn, $_POST['case_status']);
-    $assigned    = mysqli_real_escape_string($conn, $_POST['assigned_personnel']);
-    $date        = date('Y-m-d H:i:s');
-    
-    $sql = "INSERT INTO legal_cases (title, description, status, assigned, date_created) VALUES ('$title', '$description', '$status', '$assigned', '$date')";
-    if ($conn->query($sql)) {
-        $_SESSION['msg'] = "New case added successfully!";
-        header("Location: " . $_SERVER['PHP_SELF']);
-        exit;
-    } else {
-        $_SESSION['error'] = "Error: " . $conn->error;
+$sql_compliance_all = "SELECT * FROM compliance ORDER BY updated_at DESC";
+$result_compliance_all = $conn->query($sql_compliance_all);
+$compliance_records = [];
+if ($result_compliance_all && $result_compliance_all->num_rows > 0) {
+    while ($row = $result_compliance_all->fetch_assoc()) {
+        $compliance_records[] = $row;
     }
 }
 
-// Query dynamic data for each module
-// Case Management
-$sqlCases = "SELECT * FROM legal_cases ORDER BY date_created DESC";
-$result_cases = $conn->query($sqlCases);
+$safety_records = [];
+$sql_safety = "SELECT * FROM safety ORDER BY inspection_date DESC";
+$result_safety = $conn->query($sql_safety);
+if ($result_safety && $result_safety->num_rows > 0) {
+    while ($row = $result_safety->fetch_assoc()) {
+        $safety_records[] = $row;
+    }
+}
+// Kunin lahat ng accident reports at i-store sa array
+$query = "SELECT * FROM accidents ORDER BY accident_date DESC";
+$result = $conn->query($query);
 
-// Compliance & Regulation (assuming table 'bus_compliance')
-$sqlCompliance = "SELECT * FROM bus_compliance ORDER BY updated_at DESC LIMIT 1";
-$result_compliance = $conn->query($sqlCompliance);
-$compliance = $result_compliance && $result_compliance->num_rows > 0 ? $result_compliance->fetch_assoc() : null;
+$query = "SELECT * FROM accidents ORDER BY accident_date DESC";
+$result = $conn->query($query);
+$accident_reports = [];
+if ($result) {
+  while ($row = $result->fetch_assoc()) {
+    $accident_reports[] = $row;
+  }
+}
 
-// Accident Management (assuming table 'incidents')
-$sqlIncidents = "SELECT * FROM incidents ORDER BY incident_date DESC";
-$result_incidents = $conn->query($sqlIncidents);
 
-// Contract Management (assuming table 'contracts')
-$sqlContracts = "SELECT * FROM contracts WHERE status='active' ORDER BY contract_date DESC";
-$result_contracts = $conn->query($sqlContracts);
-
-// Dispute Resolution (assuming table 'disputes')
-$sqlDisputes = "SELECT * FROM disputes ORDER BY dispute_date DESC";
-$result_disputes = $conn->query($sqlDisputes);
-
-// Documentation & Record Keeping (assuming table 'legal_documents')
-$sqlDocs = "SELECT * FROM legal_documents ORDER BY uploaded_date DESC";
-$result_docs = $conn->query($sqlDocs);
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Legal Management - Bus Transportation - BTMS Admin</title>
-  <!-- Tailwind CSS CDN -->
+  <title>Safety Manager Dashboard - BTMS Admin</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Alpine.js CDN for interactivity -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-  <!-- Font Awesome CDN -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+  <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+  <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+  <link rel="stylesheet" href="/styles/legal.css?v=<?php echo time(); ?>">
+  <link rel="stylesheet" href="/styles/poppins.css?v=<?php echo time(); ?>">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <style>
+    .custom-heading { color: #2563eb; }
+    .nav-tabs { flex-wrap: nowrap !important; }
+    .nav-tabs .nav-item { flex: 1 1 auto; text-align: center; }
+    body, table, th, td {
+      font-family: 'Poppins', sans-serif;
+    }
+    /* Custom DataTables styling */
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+    background: #e2e8f0;
+    border-radius: 0.375rem;
+    margin: 0 0.25rem;
+    padding: 0.25rem 0.5rem;
+    border: none;
+    cursor: pointer;
+    font-size: 0.7rem;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background: #4299e1;
+    color: white !important;
+    font-size: 0.7rem;
+}
+
+.dataTables_wrapper .dataTables_filter {
+    margin-bottom: 10px; /* Padding sa baba ng search */
+}
+
+.dataTables_wrapper .dataTables_filter input {
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    padding: 0.4rem 0.6rem; /* Mas malaking padding */
+    font-size: 0.7rem;
+}
+
+#employeeTable tbody td {
+    font-size: 0.8rem;
+}
+
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_paginate {
+    font-size: 0.7rem;
+}
+
+.dataTables_wrapper .dataTables_length {
+    margin-bottom: 10px; /* Padding sa baba ng dropdown */
+}
+
+.dataTables_wrapper .dataTables_length label {
+    font-size: 0.7rem;
+    color: #4a5568;
+    font-weight: 500;
+}
+
+.dataTables_wrapper .dataTables_length select {
+    padding: 0.4rem 0.6rem; /* Mas malaking padding */
+    font-size: 0.7rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    background-color: #f7fafc;
+    color: #4a5568;
+    outline: none;
+}
+#busStatusTable th, #busStatusTable td {
+    padding: 0.4rem;  /* bawasan ang padding */
+    font-size: 0.85rem; /* mas maliit na font size */
+}
+  </style>
 </head>
 <body class="h-screen flex bg-gray-100">
-  <!-- Sidebar -->
-  <?php include '../../include/sidebar2.php'; ?>
-  
-  <!-- Main Content Wrapper -->
+<?php include '../../include/sidebar2.php'; ?>
   <div class="flex-1 flex flex-col">
-    <!-- Topbar -->
-    <?php include '../../include/topbar.php'; ?>
-    
-    <!-- Main Content Area with Tabs (Alpine.js) -->
-    <main class="flex-1 p-6 overflow-y-auto" x-data="{ tab: 'overview' }">
-      <!-- Display Session Messages -->
+  <?php include '../../include/topbar2.php'; ?>
+
+
+  <div class="container-fluid">
+    <main class="p-2">
       <?php if(isset($_SESSION['msg'])): ?>
-        <div class="mb-4 p-3 bg-green-200 text-green-800 rounded">
+        <div class="alert alert-success" role="alert">
           <?php echo $_SESSION['msg']; unset($_SESSION['msg']); ?>
         </div>
       <?php endif; ?>
       <?php if(isset($_SESSION['error'])): ?>
-        <div class="mb-4 p-3 bg-red-200 text-red-800 rounded">
+        <div class="alert alert-danger" role="alert">
           <?php echo $_SESSION['error']; unset($_SESSION['error']); ?>
         </div>
       <?php endif; ?>
+      <ul class="nav nav-tabs mb-4" id="dashboardTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab" aria-controls="overview" aria-selected="true">
+            <i class="fas fa-home me-2"></i>Overview
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="compliance-tab" data-bs-toggle="tab" data-bs-target="#compliance" type="button" role="tab" aria-controls="compliance" aria-selected="false">
+            <i class="fas fa-balance-scale me-2"></i>Compliance
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="accidents-tab" data-bs-toggle="tab" data-bs-target="#accidents" type="button" role="tab" aria-controls="accidents" aria-selected="false">
+            <i class="fas fa-car-crash me-2"></i>Accident Management
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="contracts-tab" data-bs-toggle="tab" data-bs-target="#contracts" type="button" role="tab" aria-controls="contracts" aria-selected="false">
+            <i class="fas fa-file-contract me-2"></i>Bus List
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="regulation-tab" data-bs-toggle="tab" data-bs-target="#regulation" type="button" role="tab" aria-controls="regulation" aria-selected="false">
+            <i class="fas fa-gavel me-2"></i>Safety Regulation
+          </button>
+        </li>
+      </ul>
+      
+      <!-- Tab Content -->
 
-      <!-- Tab Navigation -->
-      <nav class="mb-6">
-        <ul class="flex flex-wrap gap-2">
-          <li>
-            <button 
-              @click="tab = 'overview'" 
-              :class="tab === 'overview' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'" 
-              class="px-4 py-2 rounded-md focus:outline-none">
-              Overview
-            </button>
-          </li>
-          <li>
-            <button 
-              @click="tab = 'caseManagement'" 
-              :class="tab === 'caseManagement' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'" 
-              class="px-4 py-2 rounded-md focus:outline-none">
-              Case Management
-            </button>
-          </li>
-          <li>
-            <button 
-              @click="tab = 'compliance'" 
-              :class="tab === 'compliance' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'" 
-              class="px-4 py-2 rounded-md focus:outline-none">
-              Compliance & Regulation
-            </button>
-          </li>
-          <li>
-            <button 
-              @click="tab = 'accidents'" 
-              :class="tab === 'accidents' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'" 
-              class="px-4 py-2 rounded-md focus:outline-none">
-              Accident Management
-            </button>
-          </li>
-          <li>
-            <button 
-              @click="tab = 'contracts'" 
-              :class="tab === 'contracts' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'" 
-              class="px-4 py-2 rounded-md focus:outline-none">
-              Contract Management
-            </button>
-          </li>
-          <li>
-            <button 
-              @click="tab = 'disputes'" 
-              :class="tab === 'disputes' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'" 
-              class="px-4 py-2 rounded-md focus:outline-none">
-              Dispute Resolution
-            </button>
-          </li>
-          <li>
-            <button 
-              @click="tab = 'documentation'" 
-              :class="tab === 'documentation' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'" 
-              class="px-4 py-2 rounded-md focus:outline-none">
-              Documentation
-            </button>
-          </li>
-        </ul>
-      </nav>
-      
-      <!-- Overview Tab -->
-      <div x-show="tab==='overview'" class="space-y-4">
-        <h2 class="text-3xl font-bold text-[#00446b]">Legal Management Overview</h2>
-        <p class="text-gray-700 text-lg">
-          Ang system na ito ay nagma-manage ng lahat ng legal na isyu sa bus transportation, kabilang ang:
-        </p>
-        <ul class="list-disc pl-6 text-gray-700">
-          <li>Pag-monitor kung sumusunod ang bus sa lokal at pambansang regulasyon at safety standards.</li>
-          <li>Accident & Incident Management para sa mabilis na pagproseso ng legal at insurance claims.</li>
-          <li>Contract Management para sa pag-manage ng kontrata ng bus operators at third-party services.</li>
-          <li>Dispute Resolution para sa pagresolba ng mga reklamo at legal disputes.</li>
-          <li>Documentation & Record Keeping para sa transparency at audit trail.</li>
-          <li>Case Management para sa pag-record at pag-track ng legal cases.</li>
-        </ul>
-      </div>
-      
-      <!-- Case Management Tab -->
-      <div x-show="tab==='caseManagement'" class="space-y-4">
-        <h2 class="text-3xl font-bold text-[#00446b]">Case Management</h2>
-        <p class="text-gray-700 text-lg">
-          Mag-record, mag-track, at mag-update ng legal cases kasama ang status at assigned personnel.
-        </p>
-        <!-- Dynamic Case List Table -->
-        <div class="overflow-x-auto bg-white rounded shadow">
-          <table class="min-w-full">
-            <thead class="bg-gray-200">
-              <tr>
-                <th class="px-4 py-2 text-left">Case ID</th>
-                <th class="px-4 py-2 text-left">Title</th>
-                <th class="px-4 py-2 text-left">Status</th>
-                <th class="px-4 py-2 text-left">Assigned</th>
-                <th class="px-4 py-2 text-left">Date</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200">
-              <?php if ($result_cases && $result_cases->num_rows > 0): ?>
-                <?php while($case = $result_cases->fetch_assoc()): ?>
-                  <tr>
-                    <td class="px-4 py-2"><?php echo htmlspecialchars($case['id']); ?></td>
-                    <td class="px-4 py-2"><?php echo htmlspecialchars($case['title']); ?></td>
-                    <td class="px-4 py-2"><?php echo htmlspecialchars(ucfirst($case['status'])); ?></td>
-                    <td class="px-4 py-2"><?php echo htmlspecialchars($case['assigned']); ?></td>
-                    <td class="px-4 py-2"><?php echo htmlspecialchars($case['date_created']); ?></td>
-                  </tr>
-                <?php endwhile; ?>
-              <?php else: ?>
-                <tr><td colspan="5" class="px-4 py-2 text-center">No cases found.</td></tr>
-              <?php endif; ?>
-            </tbody>
-          </table>
+      <div class="tab-content">
+        <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+          <?php include 'overview.php'; ?>
         </div>
-        
-        <!-- New Case Entry Form -->
-        <div class="mt-6 bg-white p-6 rounded shadow">
-          <h3 class="text-2xl font-semibold text-gray-800 mb-4">Add New Case</h3>
-          <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
-            <div class="mb-4">
-              <label for="case_title" class="block text-gray-700 mb-2">Case Title</label>
-              <input type="text" id="case_title" name="case_title" placeholder="Enter case title" class="w-full px-3 py-2 border rounded" required>
-            </div>
-            <div class="mb-4">
-              <label for="case_description" class="block text-gray-700 mb-2">Description</label>
-              <textarea id="case_description" name="case_description" placeholder="Enter case description" class="w-full px-3 py-2 border rounded" required></textarea>
-            </div>
-            <div class="mb-4">
-              <label for="case_status" class="block text-gray-700 mb-2">Case Status</label>
-              <select id="case_status" name="case_status" class="w-full px-3 py-2 border rounded" required>
-                <option value="pending">Pending</option>
-                <option value="ongoing">Ongoing</option>
-                <option value="resolved">Resolved</option>
-              </select>
-            </div>
-            <div class="mb-4">
-              <label for="assigned_personnel" class="block text-gray-700 mb-2">Assigned Personnel</label>
-              <select id="assigned_personnel" name="assigned_personnel" class="w-full px-3 py-2 border rounded" required>
-                <option value="">Select personnel</option>
-                <option value="lawyer1">Lawyer 1</option>
-                <option value="lawyer2">Lawyer 2</option>
-                <option value="admin">Admin</option>
-              </select>
-            </div>
-            <div class="flex justify-end">
-              <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-md">Submit Case</button>
-            </div>
-          </form>
+        <div class="tab-pane fade" id="caseManagement" role="tabpanel" aria-labelledby="caseManagement-tab">
+          <?php include 'case_management.php'; ?>
         </div>
-      </div>
-      
-      <!-- Compliance & Regulation Tab -->
-      <div x-show="tab==='compliance'" class="space-y-4">
-        <h2 class="text-3xl font-bold text-[#00446b]">Compliance & Regulation</h2>
-        <p class="text-gray-700 text-lg">
-          Suriin kung sumusunod ang operasyon ng bus sa mga legal na regulasyon at safety standards.
-        </p>
-        <!-- Dynamic Compliance Data -->
-        <div class="bg-white p-6 rounded-lg shadow">
-          <h3 class="text-2xl font-semibold text-gray-800 mb-2">Bus Compliance Status</h3>
-          <?php if ($compliance): ?>
-            <p class="text-gray-600">
-              <strong>Status:</strong> 
-              <span class="<?php echo ($compliance['status'] === 'compliant') ? 'text-green-600' : 'text-red-600'; ?>">
-                <?php echo ucfirst($compliance['status']); ?>
-              </span>
-              <br>
-              <strong>Last Checked:</strong> <?php echo htmlspecialchars($compliance['updated_at']); ?>
-            </p>
-          <?php else: ?>
-            <p class="text-gray-600">No compliance data found.</p>
-          <?php endif; ?>
+        <div class="tab-pane fade" id="compliance" role="tabpanel" aria-labelledby="compliance-tab">
+          <?php include 'compliance_tab.php'; ?>
         </div>
-      </div>
-      
-      <!-- Accident & Incident Management Tab -->
-      <div x-show="tab==='accidents'" class="space-y-4">
-        <h2 class="text-3xl font-bold text-[#00446b]">Accident & Incident Management</h2>
-        <p class="text-gray-700 text-lg">
-          Mabilis na pagproseso ng legal claims, insurance claims, at pagsasaayos ng aksidente o insidente.
-        </p>
-        <!-- Dynamic Incident Log -->
-        <div class="bg-white p-6 rounded-lg shadow">
-          <h3 class="text-2xl font-semibold text-gray-800 mb-2">Recent Incidents</h3>
-          <?php if ($result_incidents && $result_incidents->num_rows > 0): ?>
-            <ul class="list-disc pl-6 text-gray-700">
-              <?php while($incident = $result_incidents->fetch_assoc()): ?>
-                <li>
-                  <strong>Incident <?php echo htmlspecialchars($incident['id']); ?>:</strong> 
-                  <?php echo htmlspecialchars($incident['description']); ?> 
-                  (<?php echo htmlspecialchars($incident['incident_date']); ?>)
-                </li>
-              <?php endwhile; ?>
-            </ul>
-          <?php else: ?>
-            <p class="text-gray-600">No incidents reported.</p>
-          <?php endif; ?>
+        <div class="tab-pane fade" id="accidents" role="tabpanel" aria-labelledby="accidents-tab">
+          <?php include 'accidents.php'; ?>
         </div>
-      </div>
-      
-      <!-- Contract Management Tab -->
-      <div x-show="tab==='contracts'" class="space-y-4">
-        <h2 class="text-3xl font-bold text-[#00446b]">Contract Management</h2>
-        <p class="text-gray-700 text-lg">
-          Pag-manage ng mga kontrata sa pagitan ng bus operators, maintenance providers, at iba pang third-party services.
-        </p>
-        <!-- Dynamic Contract List -->
-        <div class="bg-white p-6 rounded-lg shadow">
-          <h3 class="text-2xl font-semibold text-gray-800 mb-2">Active Contracts</h3>
-          <?php if ($result_contracts && $result_contracts->num_rows > 0): ?>
-            <ul class="list-disc pl-6 text-gray-700">
-              <?php while($contract = $result_contracts->fetch_assoc()): ?>
-                <li>
-                  <strong><?php echo htmlspecialchars($contract['contract_title']); ?>:</strong> 
-                  <?php echo htmlspecialchars($contract['details']); ?>
-                </li>
-              <?php endwhile; ?>
-            </ul>
-          <?php else: ?>
-            <p class="text-gray-600">No active contracts found.</p>
-          <?php endif; ?>
+        <div class="tab-pane fade" id="contracts" role="tabpanel" aria-labelledby="contracts-tab">
+          <?php include 'contracts.php'; ?>
         </div>
-      </div>
-      
-      <!-- Dispute Resolution Tab -->
-      <div x-show="tab==='disputes'" class="space-y-4">
-        <h2 class="text-3xl font-bold text-[#00446b]">Dispute Resolution</h2>
-        <p class="text-gray-700 text-lg">
-          Pagtugon sa anumang reklamo o legal dispute mula sa mga pasahero, empleyado, o stakeholders.
-        </p>
-        <!-- Dynamic Dispute List -->
-        <div class="bg-white p-6 rounded-lg shadow">
-          <h3 class="text-2xl font-semibold text-gray-800 mb-2">Ongoing Disputes</h3>
-          <?php if ($result_disputes && $result_disputes->num_rows > 0): ?>
-            <ul class="list-disc pl-6 text-gray-700">
-              <?php while($dispute = $result_disputes->fetch_assoc()): ?>
-                <li>
-                  <strong>Dispute <?php echo htmlspecialchars($dispute['id']); ?>:</strong> 
-                  <?php echo htmlspecialchars($dispute['issue']); ?> 
-                  (<?php echo htmlspecialchars($dispute['dispute_date']); ?>)
-                </li>
-              <?php endwhile; ?>
-            </ul>
-          <?php else: ?>
-            <p class="text-gray-600">No disputes recorded.</p>
-          <?php endif; ?>
+        <div class="tab-pane fade" id="regulation" role="tabpanel" aria-labelledby="regulation-tab">
+          <?php include 'regulation.php'; ?>
         </div>
-      </div>
-      
-      <!-- Documentation & Record Keeping Tab -->
-      <div x-show="tab==='documentation'" class="space-y-4">
-        <h2 class="text-3xl font-bold text-[#00446b]">Documentation & Record Keeping</h2>
-        <p class="text-gray-700 text-lg">
-          Pag-iingat ng kumpletong record ng mga legal documents tulad ng permits, licenses, at mga case logs para sa transparency at audit trail.
-        </p>
-        <!-- Dynamic Document List -->
-        <div class="bg-white p-6 rounded-lg shadow">
-          <h3 class="text-2xl font-semibold text-gray-800 mb-2">Legal Documents</h3>
-          <?php if ($result_docs && $result_docs->num_rows > 0): ?>
-            <ul class="list-disc pl-6 text-gray-700">
-              <?php while($doc = $result_docs->fetch_assoc()): ?>
-                <li><?php echo htmlspecialchars($doc['document_title']); ?> - <?php echo htmlspecialchars($doc['document_type']); ?></li>
-              <?php endwhile; ?>
-            </ul>
-          <?php else: ?>
-            <p class="text-gray-600">No legal documents available.</p>
-          <?php endif; ?>
-        </div>
-      </div>
+      </div><!-- End Tab Content -->
+      </div><!-- End Tab Content -->
     </main>
-  </div>
-  
-  <!-- Footer -->
-  <footer class="bg-white shadow-inner mt-8">
-    <div class="container mx-auto px-4 py-4 text-center text-gray-600">
-      &copy; <?php echo date('Y'); ?> BTMS. All rights reserved.
+</div>
+</div>
+
+<?php if (!empty($compliance_records)): ?>
+  <?php foreach ($compliance_records as $record): ?>
+    <div class="modal fade" id="viewComplianceModal<?php echo $record['id']; ?>" tabindex="-1"
+         aria-labelledby="viewComplianceModalLabel<?php echo $record['id']; ?>" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="viewComplianceModalLabel<?php echo $record['id']; ?>">Compliance Details</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p><strong>Status:</strong> <?php echo ucfirst($record['status']); ?></p>
+            <p><strong>Last Checked:</strong> <?php echo date("F d Y, g:ia", strtotime($record['updated_at'])); ?></p>
+            <p><strong>Notes:</strong> <?php echo htmlspecialchars($record['notes']); ?></p>
+            <?php if (!empty($record['checklist'])): 
+              // Hatiin ang checklist string sa array at alisin ang extrang spaces
+              $checklist_items = array_map('trim', explode(',', $record['checklist']));
+            ?>
+              <p><strong>Checklist:</strong></p>
+              <div class="row">
+                <?php foreach ($checklist_items as $item): 
+                  // Palitan ang underscores ng space at gawing title case
+                  $clean_item = ucwords(str_replace('_', ' ', $item));
+                ?>
+                  <div class="col-md-6 mb-2">
+                    <p class="mb-0">
+                      <i class="fas fa-check-circle text-success me-1"></i>
+                      Check <?php echo $clean_item; ?>
+                    </p>
+                  </div>
+                <?php endforeach; ?>
+              </div>
+            <?php endif; ?>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
     </div>
-  </footer>
+  <?php endforeach; ?>
+<?php endif; ?>
+
+
+
+
+<?php if (!empty($safety_records)): ?>
+  <?php foreach ($safety_records as $record): ?>
+    <div class="modal fade" id="viewSafetyModal<?= $record['id'] ?>" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              Safety Proofs - Bus <?= htmlspecialchars($record['bus_number']) ?> 
+              (Plate: <?= htmlspecialchars($record['plate_number']) ?>)
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <?php foreach (['bus_proof', 'passenger_proof'] as $proofType): ?>
+                <?php if (!empty($record[$proofType])): ?>
+                  <?php
+                    // Gamitin ang ACTUAL PHYSICAL PATH
+                    $filename = basename($record[$proofType]);
+                    $absolutePath = 'C:/wamp64/www/bus-management-system-admin/private/employee/uploads/' . $filename;
+                    $imagePath = '/private/employee/uploads/' . rawurlencode($filename);
+                  ?>
+                  <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                      <div class="card-header bg-<?= $proofType === 'bus_proof' ? 'primary' : 'success' ?> text-white">
+                        <?= ucfirst(str_replace('_', ' ', $proofType)) ?>
+                      </div>
+                      <div class="card-body text-center">
+                        <?php if(file_exists($absolutePath)): ?>
+                          <img src="<?= $imagePath ?>" 
+                               class="img-fluid rounded" 
+                               alt="<?= $proofType ?> proof"
+                               style="max-height: 300px;">
+                        <?php else: ?>
+                          <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            File not found!<br>
+                            <small class="text-muted">
+                              Server Path: <?= $absolutePath ?>
+                            </small>
+                          </div>
+                        <?php endif; ?>
+                      </div>
+                    </div>
+                  </div>
+                <?php endif; ?>
+              <?php endforeach; ?>
+            </div>
+            <?php if (!empty($record['checklist'])): 
+              // Hatiin ang checklist string sa array at alisin ang extrang spaces
+              $checklist_items = array_map('trim', explode(',', $record['checklist']));
+            ?>
+              <p><strong>Checklist:</strong></p>
+              <div class="row">
+                <?php foreach ($checklist_items as $item): 
+                  // Palitan ang underscores ng space at gawing title case
+                  $clean_item = ucwords(str_replace('_', ' ', $item));
+                ?>
+                  <div class="col-md-6 mb-2">
+                    <p class="mb-0">
+                      <i class="fas fa-check-circle text-success me-1"></i>
+                      Check <?php echo $clean_item; ?>
+                    </p>
+                  </div>
+                <?php endforeach; ?>
+              </div>
+            <?php endif; ?>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              <i class="fas fa-times me-2"></i> Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  <?php endforeach; ?>
+<?php endif; ?>
+
+
+<?php if (!empty($accident_reports)): ?>
+  <?php foreach ($accident_reports as $report): ?>
+    <?php 
+      // I-format ang date at time
+      $dt = strtotime($report['accident_date']);
+      $formattedDate = date('F, d Y', $dt);  // Halimbawa: January, 06 2026
+      $formattedTime = date('g:ia', $dt);      // Halimbawa: 1:46pm
+
+      // Directory para sa image
+      $baseDir = '/home/admin.nexfleetdynamics.com/public_html';
+      if (!empty($report['image'])) {
+          $filename = basename($report['image']);
+          $absolutePath = $baseDir . '/private/employee/uploads/' . $filename;
+          $imagePath = '/private/employee/uploads/' . $filename; // Relative URL
+      }
+    ?>
+    <!-- Accident Report Details Modal -->
+    <div class="modal fade" id="viewAccidentModal<?php echo $report['id']; ?>" tabindex="-1" aria-labelledby="viewAccidentModalLabel<?php echo $report['id']; ?>" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="viewAccidentModalLabel<?php echo $report['id']; ?>">Accident Report Details</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <!-- Two column layout para ibang fields -->
+            <div class="row mt-2">
+              <div class="col-md-6">
+                <p><strong>Date:</strong> <?php echo $formattedDate; ?></p>
+                <p><strong>Time:</strong> <?php echo $formattedTime; ?></p>
+                <p><strong>Location:</strong> <?php echo htmlspecialchars($report['location']); ?></p>
+                <p><strong>Status:</strong> <?php echo htmlspecialchars($report['status'] ?? 'Pending'); ?></p>
+              </div>
+              <div class="col-md-6">
+                <p><strong>Number of Injuries:</strong> <?php echo $report['injuries']; ?></p>
+                <p><strong>Severity:</strong> <?php echo htmlspecialchars($report['severity']); ?></p>
+                <p><strong>Witness Name:</strong> <?php echo htmlspecialchars($report['witness_name']); ?></p>
+                <p><strong>Witness Contact:</strong> <?php echo htmlspecialchars($report['witness_contact']); ?></p>
+              </div>
+            </div>
+            <!-- Full width Description -->
+            <div class="row mt-2">
+              <div class="col-12">
+                <p><strong>Description:</strong></p>
+                <p><?php echo htmlspecialchars($report['description']); ?></p>
+              </div>
+            </div>
+            <!-- Full width Additional Comments -->
+            <div class="row mt-2">
+              <div class="col-12">
+                <p><strong>Additional Comments:</strong></p>
+                <p><?php echo htmlspecialchars($report['additional_comments']); ?></p>
+              </div>
+            </div>
+            <!-- Image (kung mayroon) -->
+            <?php if (!empty($report['image'])): ?>
+              <div class="row mt-3">
+                <div class="col-12">
+                  <p><strong>Image:</strong></p>
+                  <?php if (file_exists($absolutePath)): ?>
+                    <img src="<?php echo $imagePath; ?>" alt="Accident Image" class="img-fluid">
+                  <?php else: ?>
+                    <!-- SweetAlert alert kung hindi makita ang file -->
+                    <script>
+                      Swal.fire({
+                        icon: 'error',
+                        title: 'File not found!',
+                        text: 'The image file for this accident report was not found on the server.'
+                      });
+                    </script>
+                  <?php endif; ?>
+                </div>
+              </div>
+            <?php endif; ?>
+          </div>
+          <div class="modal-footer">
+            <!-- Button para buksan ang hiwalay na Update Status modal -->
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateStatusModal<?php echo $report['id']; ?>">Update Status</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hiwalay na Update Status Modal -->
+    <div class="modal fade" id="updateStatusModal<?php echo $report['id']; ?>" tabindex="-1" aria-labelledby="updateStatusModalLabel<?php echo $report['id']; ?>" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form action="update_status.php" method="POST">
+        <div class="modal-header">
+          <h5 class="modal-title" id="updateStatusModalLabel<?php echo $report['id']; ?>">Update Status</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="report_id" value="<?php echo $report['id']; ?>">
+          <div class="mb-3">
+            <label for="status<?php echo $report['id']; ?>" class="form-label"><strong>Status:</strong></label>
+            <select name="status" id="status<?php echo $report['id']; ?>" class="form-select">
+              <option value="Pending" <?php if(($report['status'] ?? 'Pending')=="Pending") echo 'selected'; ?>>Pending</option>
+              <option value="Review Accident" <?php if(($report['status'] ?? 'Pending')=="Review Accident") echo 'selected'; ?>>Review Accident</option>
+              <option value="Resolved" <?php if(($report['status'] ?? 'Pending')=="Resolved") echo 'selected'; ?>>Resolved</option>
+              <option value="Rejected" <?php if(($report['status'] ?? 'Pending')=="Rejected") echo 'selected'; ?>>Rejected</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Update Status</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+    
+  <?php endforeach; ?>
+<?php endif; ?>
+
+
+  <script>
+    $(document).ready(function() {
+      $('#caseTable').DataTable();
+      $('#complianceTable').DataTable();
+      $('#safetyTable').DataTable();
+    });
+  </script>
+  
+  <!-- Bootstrap JS Bundle -->
 </body>
 </html>

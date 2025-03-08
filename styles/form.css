@@ -1,0 +1,250 @@
+:root {
+    /* Color Palette */
+    --primary-color: #3498db;
+    --secondary-color: #2ecc71;
+    --accent-color: #9b59b6;
+    --text-primary: #2c3e50;
+    --text-secondary: #34495e;
+    --background-light: #f4f6f9;
+    --background-dark: #e9ecef;
+    
+    /* Typography */
+    --font-primary: 'Inter', 'Poppins', 'Arial', sans-serif;
+    
+    /* Spacing & Sizing */
+    --border-radius-sm: 8px;
+    --border-radius-lg: 16px;
+    --shadow-subtle: 0 4px 6px rgba(0,0,0,0.05);
+    --shadow-medium: 0 10px 20px rgba(0,0,0,0.1);
+    
+    /* Transitions */
+    --transition-quick: 0.2s ease;
+    --transition-smooth: 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* Global Reset & Base Styles */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-primary);
+    background: linear-gradient(135deg, var(--background-light), var(--background-dark));
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Modern Card Component */
+.card {
+    background: white;
+    border-radius: var(--border-radius-lg);
+    box-shadow: 
+        0 20px 40px rgba(0,0,0,0.1),
+        0 8px 16px rgba(0,0,0,0.06);
+    overflow: hidden;
+    transition: all var(--transition-smooth);
+    transform-style: preserve-3d;
+    will-change: transform;
+}
+
+.card:hover {
+    transform: scale(1.02) translateY(-5px);
+    box-shadow: 
+        0 25px 50px rgba(0,0,0,0.12),
+        0 10px 20px rgba(0,0,0,0.08);
+}
+
+/* Elegant Header */
+.card-header {
+    background: linear-gradient(135deg, var(--primary-color), #2980b9);
+    color: white;
+    padding: 1.25rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg, 
+        rgba(255,255,255,0.15), 
+        transparent
+    );
+    transform: rotate(-45deg);
+}
+
+/* Form Elements */
+.form-control, 
+.form-select {
+    border: 2px solid rgba(0,0,0,0.1);
+    border-radius: var(--border-radius-sm);
+    padding: 0.75rem 1rem;
+    font-size: 0.8rem;
+    transition: all var(--transition-quick);
+    outline: none;
+}
+
+.form-control:focus, 
+.form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 
+        0 0 0 3px rgba(52, 152, 219, 0.2),
+        var(--shadow-subtle);
+    transform: translateY(-2px);
+}
+
+/* Modern Button Styles */
+.btn-primary, 
+.btn-success {
+    position: relative;
+    overflow: hidden;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    transition: all var(--transition-smooth);
+    background: linear-gradient(
+        45deg, 
+        var(--primary-color), 
+        #2980b9
+    );
+}
+
+.btn-primary:hover, 
+.btn-success:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-medium);
+}
+
+.btn-primary::after, 
+.btn-success::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        120deg, 
+        transparent, 
+        rgba(255,255,255,0.3), 
+        transparent
+    );
+    transition: all var(--transition-quick);
+}
+
+.btn-primary:hover::after, 
+.btn-success:hover::after {
+    left: 100%;
+}
+
+.form-check {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.3s ease;
+}
+
+.form-check-input {
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border: 2px solid #6c757d;
+    border-radius: 4px;
+    outline: none;
+    margin-right: 12px;
+    cursor: pointer;
+    transition: all 0.3s eas
+}
+
+.form-check-input:checked {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.form-check-input:checked::before {
+    content: '✔';
+    display: block;
+    text-align: center;
+    color: white;
+    font-size: 7px;
+    line-height: 22px;
+}
+
+.form-check-label {
+    color: #333;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.form-check:hover .form-check-input {
+    border-color: #007bff;
+    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.1);
+}
+
+.form-check:hover .form-check-label {
+    color: #007bff;
+}
+
+.form-check-input:focus {
+    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.25);
+    border-color: #007bff;
+}
+
+.form-check-label{
+    font-size: 12px;
+}
+
+/* Responsive Typography */
+@media (max-width: 768px) {
+    :root {
+        font-size: 12px;
+    }
+    
+    .card {
+        margin: 15px;
+        border-radius: var(--border-radius-sm);
+    }
+}
+
+/* Accessibility & Advanced Interactions */
+@keyframes subtle-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+.interactive-element {
+    transition: all var(--transition-smooth);
+}
+
+.interactive-element:hover {
+    animation: subtle-float 2s infinite;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: linear-gradient(135deg, #121212, #1e1e1e);
+        color: #e0e0e0;
+    }
+    
+    .card {
+        background: #1f1f1f;
+        box-shadow: 
+            0 20px 40px rgba(0,0,0,0.2),
+            0 8px 16px rgba(0,0,0,0.1);
+    }
+}
